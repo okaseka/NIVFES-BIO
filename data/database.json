@@ -1,0 +1,32 @@
+{
+  "scores": [
+    {
+      "npm": "717717117",
+      "nama": "lord",
+      "module_id": "dna-rekombinan",
+      "score": 50,
+      "waktu": "2026-11-23 11:32:52"
+    },
+    {
+      "npm": "123",
+      "nama": "wowo",
+      "module_id": "kultur-jaringan",
+      "score": 10,
+      "waktu": "2026-11-23 11:50:22"
+    }
+  ],
+  "feedbacks": [
+    {
+      "npm": "123",
+      "nama": "tes",
+      "message": "kurang ini bang",
+      "waktu": "2026-11-23 11:50:56"
+    },
+    {
+      "npm": "4",
+      "nama": "h",
+      "message": "bagus",
+      "waktu": "2026-11-24 09:21:13"
+    }
+  ]
+}

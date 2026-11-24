@@ -1,0 +1,69 @@
+<svg class="lab-svg-entity" data-asset-id="suntikan-antigen" viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                
+            <defs>
+                <!-- Gradien Kaca Realistis -->
+                <linearGradient id="svg_suntikan_antigen_25848_glass_body" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8"/>
+                    <stop offset="12%" stop-color="#f0f9ff" stop-opacity="0.35"/>
+                    <stop offset="50%" stop-color="#e0f2fe" stop-opacity="0.2"/>
+                    <stop offset="88%" stop-color="#bae6fd" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0.75"/>
+                </linearGradient>
+                <linearGradient id="svg_suntikan_antigen_25848_glass_highlight" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85"/>
+                    <stop offset="50%" stop-color="#ffffff" stop-opacity="0.2"/>
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0"/>
+                </linearGradient>
+
+                <!-- Gradien Logam & Stainless Steel -->
+                <linearGradient id="svg_suntikan_antigen_25848_steel" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#f8fafc"/>
+                    <stop offset="25%" stop-color="#e2e8f0"/>
+                    <stop offset="55%" stop-color="#cbd5e1"/>
+                    <stop offset="100%" stop-color="#64748b"/>
+                </linearGradient>
+                <linearGradient id="svg_suntikan_antigen_25848_metal_bevel" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#ffffff"/>
+                    <stop offset="50%" stop-color="#94a3b8"/>
+                    <stop offset="100%" stop-color="#334155"/>
+                </linearGradient>
+
+                <!-- Gradien Cairan Dinamis -->
+                <linearGradient id="svg_suntikan_antigen_25848_liquid" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+                    <stop offset="15%" stop-color="#eab308" stop-opacity="0.85"/>
+                    <stop offset="100%" stop-color="#eab308" stop-opacity="0.95"/>
+                </linearGradient>
+
+                <!-- Filter Glow LED & Lampu -->
+                <filter id="svg_suntikan_antigen_25848_glow" x="-25%" y="-25%" width="150%" height="150%">
+                    <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                    <feMerge>
+                        <feMergeNode in="blur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+                <filter id="svg_suntikan_antigen_25848_soft_shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.35"/>
+                </filter>
+            </defs>
+                
+                    <g transform="translate(30, 8)">
+                        <!-- Batang Plunger Pendorong dengan Pegangan -->
+                        <rect x="16" y="2" width="6" height="26" rx="1" fill="#cbd5e1" stroke="#334155" stroke-width="1.8"/>
+                        <rect x="11" y="2" width="16" height="4.5" rx="1.5" fill="#475569"/>
+                        <rect x="14" y="26" width="10" height="4.5" rx="1" fill="#0f172a"/>
+                        <!-- Tabung Silinder Spuit Kaca Transparan -->
+                        <rect x="11" y="28" width="16" height="48" rx="2.5" fill="url(#svg_suntikan_antigen_25848_glass_body)" stroke="#334155" stroke-width="2"/>
+                        <!-- Cairan Hormon / Antigen di Dalam -->
+                        <rect x="12" y="42" width="14" height="33" rx="1" fill="#ef4444" opacity="0.85"/>
+                        <!-- Garis Skala Pengukur -->
+                        <line x1="12" y1="36" x2="17" y2="36" stroke="#334155" stroke-width="1.2"/>
+                        <line x1="12" y1="46" x2="19" y2="46" stroke="#ffffff" stroke-width="1.5"/>
+                        <line x1="12" y1="56" x2="19" y2="56" stroke="#ffffff" stroke-width="1.5"/>
+                        <line x1="12" y1="66" x2="19" y2="66" stroke="#ffffff" stroke-width="1.5"/>
+                        <!-- Jarum Baja Stainless Mengilap -->
+                        <rect x="16" y="76" width="6" height="6" fill="#64748b"/>
+                        <line x1="19" y1="82" x2="19" y2="95" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
+                    </g>
+            </svg>

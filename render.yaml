@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: nivfes-bio
+    runtime: go
+    buildCommand: go build -o nivfes-bio main.go
+    startCommand: ./nivfes-bio
+    envVars:
+      - key: PORT
+        value: 8080
+

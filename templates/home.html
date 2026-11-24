@@ -1,0 +1,17 @@
+{{define "home-content"}}
+<div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-slate-800 mb-4">Bioteknologi Modern</h1>
+    <p class="text-lg text-slate-600 max-w-2xl mx-auto">Platform praktikum virtual. Silakan pilih modul eksperimen di bawah ini untuk mempelajari teori dan melakukan simulasi laboratorium.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {{range .Modules}}
+    <a href="/module/{{.ID}}" class="card-hover bg-white rounded-xl p-6 border border-slate-200 block group relative overflow-hidden">
+        <div class="text-4xl mb-4 bg-teal-50 w-16 h-16 flex items-center justify-center rounded-lg">{{.Icon}}</div>
+        <h2 class="text-xl font-bold text-slate-800 mb-2">{{.Title}}</h2>
+        <p class="text-sm text-slate-600 leading-relaxed">{{.Summary}}</p>
+        <div class="absolute bottom-0 left-0 h-1 bg-teal-600 w-0 group-hover:w-full transition-all duration-300"></div>
+    </a>
+    {{end}}
+</div>
+{{end}}

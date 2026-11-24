@@ -1,0 +1,197 @@
+{{define "katalog"}}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Objek SVG HD - Virtual Lab NIVFES BIO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0b1120; color: #f8fafc; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        code { font-family: 'JetBrains Mono', monospace; }
+        .table-strip { background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); border-top: 3px solid #64748b; }
+        .object-card { transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease; }
+        .object-card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px -6px rgba(56, 189, 248, 0.3); border-color: #38bdf8; }
+        .bench-view-container {
+            background: linear-gradient(180deg, #042f2e 0%, #0f766e 45%, #134e4a 72%, #1e293b 72%, #0f172a 100%);
+            border-radius: 1.5rem;
+            min-height: 480px;
+            position: relative;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+    </style>
+    <script src="/static/js/theme.js"></script>
+    <script src="/static/js/svg-objects.js"></script>
+    <script src="/static/js/assets.config.js"></script>
+</head>
+<body class="min-h-screen flex flex-col p-4 sm:p-6 lg:p-8">
+    <!-- Header -->
+    <header class="max-w-7xl mx-auto w-full mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-6">
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <a href="/" class="bg-slate-800 hover:bg-slate-700 text-teal-400 px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-slate-700">
+                    <span>&larr;</span> Kembali ke Beranda
+                </a>
+                <span class="bg-teal-950 text-teal-400 border border-teal-800 text-xs px-3 py-1 rounded-full font-mono font-bold">56 Objek Vektor HD</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Katalog Objek Laboratorium SVG (HD)</h1>
+            <p class="text-slate-400 text-sm mt-1">Inspeksi vektor tampak samping (*side-view*) resolusi tinggi dengan gradien multi-stop, sorotan kaca, meniskus cairan, dan proporsi skala nyata.</p>
+        </div>
+        
+        <!-- Toggle Mode Tampilan (Kartu vs Meja Nyata) -->
+        <div class="flex items-center gap-2 bg-slate-900 p-1.5 rounded-2xl border border-slate-800">
+            <button id="view-mode-card" onclick="setViewMode('card')" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-teal-600 text-white shadow-sm">
+                🗂️ Mode Kartu
+            </button>
+            <button id="view-mode-bench" onclick="setViewMode('bench')" class="px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">
+                🔬 Meja Skala Sebenarnya
+            </button>
+        </div>
+    </header>
+
+    <!-- Filter Bar -->
+    <section class="max-w-7xl mx-auto w-full mb-6 flex flex-wrap gap-2">
+        <button onclick="filterCategory('all', this)" class="filter-btn active bg-teal-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition">Semua (56)</button>
+        <button onclick="filterCategory('umum', this)" class="filter-btn bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">Alat Umum</button>
+        <button onclick="filterCategory('a-kultur-jaringan', this)" class="filter-btn bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">A. Kultur Jaringan</button>
+        <button onclick="filterCategory('b-bayi-tabung', this)" class="filter-btn bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">B. Bayi Tabung</button>
+        <button onclick="filterCategory('c-kloning', this)" class="filter-btn bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">C. Kloning</button>
+        <button onclick="filterCategory('d-hibridoma', this)" class="filter-btn bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">D. Hibridoma</button>
+        <button onclick="filterCategory('e-dna-rekombinan', this)" class="filter-btn bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">E. DNA Rekombinan</button>
+    </section>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto w-full flex-grow">
+        <!-- 1. GRID MODE KARTU -->
+        <div id="catalog-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+            <!-- Di-generate oleh JavaScript -->
+        </div>
+
+        <!-- 2. MODE MEJA SKALA SEBENARNYA -->
+        <div id="catalog-bench" class="bench-view-container hidden p-6">
+            <div class="text-xs text-teal-200 mb-4 font-mono font-bold flex items-center gap-2">
+                <span>⚡</span> Preview seluruh objek di atas panggung meja datar dalam skala proporsional:
+            </div>
+            <div id="bench-stage-items" class="flex items-end gap-10 min-w-max pb-16 pt-12 px-8">
+                <!-- Di-generate oleh JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="max-w-7xl mx-auto w-full mt-14 pt-6 border-t border-slate-800/80 text-center text-xs text-slate-500">
+        &copy; NIVFES BIO &bull; Media Pembelajaran Sains SMP/MTs &bull; Format Grafis SVG Vektor Standar W3C
+    </footer>
+
+    <script>
+        let currentFilter = 'all';
+        let currentMode = 'card';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderView();
+        });
+
+        function setViewMode(mode) {
+            currentMode = mode;
+            const btnCard = document.getElementById('view-mode-card');
+            const btnBench = document.getElementById('view-mode-bench');
+            const gridEl = document.getElementById('catalog-grid');
+            const benchEl = document.getElementById('catalog-bench');
+
+            if (mode === 'card') {
+                btnCard.className = 'px-4 py-2 rounded-xl text-xs font-bold transition bg-teal-600 text-white shadow-sm';
+                btnBench.className = 'px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white';
+                gridEl.classList.remove('hidden');
+                benchEl.classList.add('hidden');
+            } else {
+                btnBench.className = 'px-4 py-2 rounded-xl text-xs font-bold transition bg-teal-600 text-white shadow-sm';
+                btnCard.className = 'px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white';
+                gridEl.classList.add('hidden');
+                benchEl.classList.remove('hidden');
+            }
+            renderView();
+        }
+
+        function filterCategory(cat, btn) {
+            currentFilter = cat;
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.className = 'filter-btn bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-bold px-3.5 py-2 rounded-xl transition border border-slate-800';
+            });
+            if (btn) {
+                btn.className = 'filter-btn active bg-teal-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition';
+            }
+            renderView();
+        }
+
+        function renderView() {
+            const objects = window.LabAssetsConfig ? window.LabAssetsConfig.objects : {};
+
+            if (currentMode === 'card') {
+                const grid = document.getElementById('catalog-grid');
+                grid.innerHTML = '';
+
+                for (const [id, item] of Object.entries(objects)) {
+                    if (currentFilter !== 'all' && item.category !== currentFilter) continue;
+
+                    const card = document.createElement('div');
+                    card.className = 'object-card bg-slate-900/90 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between shadow-md';
+
+                    let svgHtml = '';
+                    if (window.LabSVG) {
+                        svgHtml = window.LabSVG.render(id, { width: item.width || 120, height: item.height || 120 });
+                    }
+
+                    card.innerHTML = `
+                        <div class="p-5 flex-grow flex flex-col justify-end items-center relative min-h-[190px] bg-slate-950/70">
+                            <div class="w-full h-32 flex items-end justify-center mb-1">
+                                ${svgHtml}
+                            </div>
+                            <div class="table-strip w-full h-4 rounded-t-sm shadow-inner"></div>
+                        </div>
+                        <div class="p-4 bg-slate-900 border-t border-slate-800/90">
+                            <div class="text-sm font-bold text-slate-100 truncate" title="${item.name}">${item.name}</div>
+                            <div class="flex justify-between items-center mt-1.5">
+                                <span class="text-[11px] text-teal-400 font-mono font-semibold">${id}</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono border border-slate-700">${item.width}x${item.height}</span>
+                            </div>
+                            <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex justify-between items-center text-[10px] text-slate-400">
+                                <span class="capitalize">${item.category.replace(/-/g, ' ')}</span>
+                                <a href="/static/assets/svg/${item.category}/${id}.svg" target="_blank" class="text-teal-400 hover:text-teal-300 font-bold underline">.svg HD</a>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            } else {
+                const benchStage = document.getElementById('bench-stage-items');
+                benchStage.innerHTML = '';
+
+                for (const [id, item] of Object.entries(objects)) {
+                    if (currentFilter !== 'all' && item.category !== currentFilter) continue;
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'flex flex-col items-center justify-end flex-shrink-0';
+                    wrapper.style.width = `${item.width}px`;
+
+                    let svgHtml = '';
+                    if (window.LabSVG) {
+                        svgHtml = window.LabSVG.render(id, { width: item.width, height: item.height });
+                    }
+
+                    wrapper.innerHTML = `
+                        <div style="width: ${item.width}px; height: ${item.height}px;" class="flex items-end justify-center filter drop-shadow-md">
+                            ${svgHtml}
+                        </div>
+                        <span class="mt-3 text-xs font-bold text-white bg-slate-900/90 border border-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap">${item.name}</span>
+                        <span class="text-[10px] text-teal-400 font-mono mt-0.5">${item.width}px</span>
+                    `;
+                    benchStage.appendChild(wrapper);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+{{end}}

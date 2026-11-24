@@ -1,0 +1,72 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIVFES BIO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
+        h1, h2, h3, .nav-brand { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .tab-content { transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1); }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="/static/css/simulator.css">
+    <script src="/static/js/theme.js" defer></script>
+    <script src="/static/js/svg-objects.js" defer></script>
+    <script src="/static/js/assets.config.js" defer></script>
+    <script src="/static/js/motion.js" defer></script>
+    <script src="/static/js/simulator.js" defer></script>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="glass-nav fixed w-full top-0 z-50 border-b border-slate-200 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="/" class="nav-brand text-2xl font-bold text-teal-600">NIVFES BIO</a>
+            <div class="flex items-center gap-4">
+                <a href="/katalog-objek" target="_blank" class="text-xs bg-teal-50 text-teal-700 hover:bg-teal-100 font-semibold px-3 py-1.5 rounded-lg border border-teal-200 transition flex items-center gap-1.5">
+                    <span>🎨</span> Katalog Objek SVG
+                </a>
+                <div class="text-right text-sm">
+                    <p class="font-bold text-slate-800">{{.Nama}}</p>
+                    <p class="text-slate-500">{{.NPM}}</p>
+                </div>
+                <a href="/logout" class="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-semibold hover:bg-red-100 text-sm">Keluar</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto pt-24 px-4 sm:px-6 pb-12 flex-grow w-full">
+        {{if eq .Page "home"}}
+            {{template "home-content" .}}
+        {{else}}
+            {{template "module-content" .}}
+        {{end}}
+    </main>
+    
+    <!-- Footer & Feedback -->
+    <footer class="border-t border-slate-200 bg-white py-6 mt-auto">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col items-center">
+            <div class="w-full max-w-md mb-6">
+                <h4 class="text-center font-bold text-slate-700 mb-2">Beri Masukan (Feedback)</h4>
+                <div class="flex gap-2">
+                    <input type="text" id="feedback-input" class="flex-grow border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-teal-500" placeholder="Ketik masukan Anda di sini...">
+                    <button onclick="sendFeedback()" class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-teal-700">Kirim</button>
+                </div>
+                <p id="feedback-msg" class="text-emerald-600 text-xs text-center mt-2 hidden">Terima kasih atas masukannya!</p>
+            </div>
+            <div class="text-center text-slate-500 text-sm">
+                &copy; NIVFES BIO.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+{{end}}

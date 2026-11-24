@@ -1,0 +1,575 @@
+/* =========================================================================
+   VIRTUAL LAB SIMULATOR STYLESHEET HD (SIDE-VIEW FLAT VECTOR MEJA LAB)
+   Standar Desain & Layout Sistem Slot:
+   - LabScene Diperbesar (Min-Height 560px - 720px, Fullscreen Support)
+   - Layout Slot Dinamis: Jarak proporsional, tanpa tabrakan di 360px, 768px, 1280px, 1920px
+   - Aturan Z-Index Pusat: Bayangan < Alat < Objek < Di Dalam Alat < Drag < Tooltip
+   - Tipografi Tajam: Label >= 14px desktop, >= 12px mobile
+   ========================================================================= */
+
+:root {
+    --table-surface: #1e293b;
+    --table-edge: #64748b;
+    --table-depth: #0f172a;
+    --led-green: #22c55e;
+    --led-amber: #f59e0b;
+    --led-cyan: #38bdf8;
+    
+    /* Centralized Z-Index System */
+    --z-scene-bg: 1;
+    --z-decor: 2;
+    --z-table-strip: 5;
+    --z-shadow: 6;
+    --z-apparatus: 10;
+    --z-table-item: 20;
+    --z-inside-apparatus: 30;
+    --z-interactive: 50;
+    --z-dragging: 100;
+    --z-toast-feedback: 200;
+    --z-modal: 300;
+}
+
+/* --- SIDEBAR TOGGLE COLLAPSE (RUANG SIMULATOR MAKSIMAL) --- */
+#module-sidebar {
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#module-sidebar.sidebar-collapsed {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* --- CONTAINER UTAMA PANGGUNG (LAB SCENE EXPANDED) --- */
+.lab-scene-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 560px;
+    max-height: 720px;
+    height: 62vh;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 16px 40px -8px rgba(15, 23, 42, 0.35), inset 0 1px 3px rgba(255, 255, 255, 0.15);
+    user-select: none;
+    touch-action: none;
+    transition: background 0.4s ease, height 0.3s ease;
+}
+
+/* Fullscreen Mode via HTML5 Fullscreen API */
+.lab-scene-wrapper:fullscreen,
+.lab-scene-wrapper:-webkit-full-screen {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    padding: 16px !important;
+    box-sizing: border-box;
+}
+
+/* Latar Gradien Dinamis per Simulator dengan Elemen Dekoratif Halus */
+.lab-scene-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: var(--z-scene-bg);
+}
+
+/* Elemen Dekoratif Dinding Lab (Cahaya Overhead, Ambient, Vignette) */
+.lab-scene-decor {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: var(--z-decor);
+    opacity: 0.5;
+    background-image: 
+        /* Cahaya overhead utama */
+        radial-gradient(ellipse at 50% 10%, rgba(255, 255, 255, 0.14) 0%, transparent 55%),
+        /* Pantulan ambient samping */
+        radial-gradient(circle at 12% 40%, rgba(255, 255, 255, 0.07) 0%, transparent 35%),
+        radial-gradient(circle at 88% 35%, rgba(255, 255, 255, 0.07) 0%, transparent 35%),
+        /* Vignette kedalaman ruangan */
+        radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(0, 0, 0, 0.12) 100%),
+        /* Gelap gradual mendekati meja (bayangan dinding bawah) */
+        linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.1) 80%, rgba(0, 0, 0, 0.22) 100%);
+}
+
+/* ===== MEJA LAB 3D — PERMUKAAN DATAR + TAMPAK DEPAN BERKEDALAMAN ===== */
+.lab-table-strip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 35%;
+    background: linear-gradient(180deg,
+        /* ── Permukaan atas meja (top ~26%) ── */
+        #3e5165 0%,
+        #374a5c 8%,
+        #314354 16%,
+        #2c3d4e 25%,
+        /* ── Tepi logam / bibir meja ── */
+        #5a7a90 26%,
+        #48647a 26.8%,
+        /* ── Tampak depan kedalaman (bottom ~73%) ── */
+        #3c4e5e 28%,
+        #354555 35%,
+        #2d3b49 45%,
+        #25313d 57%,
+        #1d2731 70%,
+        #161f28 84%,
+        #0f1620 100%
+    );
+    border-top: 2px solid rgba(130, 175, 215, 0.35);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.07),
+        inset 0 -10px 28px rgba(0, 0, 0, 0.18),
+        0 -4px 16px rgba(0, 0, 0, 0.18);
+    z-index: var(--z-table-strip);
+    pointer-events: none;
+}
+
+/* Garis highlight metalik di tepi bibir meja (edge line) */
+.lab-table-strip::before {
+    content: '';
+    position: absolute;
+    top: 26%;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: linear-gradient(90deg,
+        transparent 3%,
+        rgba(120, 165, 205, 0.3) 15%,
+        rgba(175, 210, 240, 0.5) 50%,
+        rgba(120, 165, 205, 0.3) 85%,
+        transparent 97%
+    );
+    z-index: 1;
+}
+
+/* Refleksi cahaya halus pada permukaan atas meja */
+.lab-table-strip::after {
+    content: '';
+    position: absolute;
+    top: 2%;
+    left: 12%;
+    right: 12%;
+    height: 20%;
+    background: radial-gradient(ellipse at 50% 50%,
+        rgba(255, 255, 255, 0.055) 0%,
+        rgba(255, 255, 255, 0.015) 60%,
+        transparent 100%
+    );
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Bayangan transisi dinding → meja (shadow drop) */
+.lab-wall-shadow {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 35%;
+    height: 14px;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.22) 100%);
+    z-index: calc(var(--z-table-strip) + 1);
+    pointer-events: none;
+}
+
+/* Scrollable Table Container for Mobile Responsiveness */
+.lab-table-scroll-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    z-index: var(--z-apparatus);
+}
+
+.lab-table-scroll-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.lab-table-scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.4);
+    border-radius: 9999px;
+}
+
+/* Area Tempat Berdirinya Objek di Meja */
+.lab-table-plane {
+    position: relative;
+    width: 100%;
+    min-width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* --- OBJEK VIRTUAL LAB (ENTITY) --- */
+.lab-entity {
+    position: absolute;
+    transform-origin: 50% 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    pointer-events: auto;
+    cursor: default;
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease, opacity 0.2s ease;
+    z-index: var(--z-table-item);
+}
+
+/* Status Objek Khusus */
+.lab-entity.is-apparatus {
+    z-index: var(--z-apparatus);
+}
+
+.lab-entity.is-inside {
+    z-index: var(--z-inside-apparatus) !important;
+}
+
+/* Objek yang sedang aktif untuk diinteraksikan */
+.lab-entity.can-interact {
+    cursor: grab;
+    z-index: var(--z-interactive);
+}
+
+.lab-entity.can-interact:hover {
+    filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.85));
+}
+
+.lab-entity.can-interact.pulse-hint {
+    animation: pulse-glow-hint 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-glow-hint {
+    0%, 100% {
+        filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.5));
+    }
+    50% {
+        filter: drop-shadow(0 0 22px rgba(56, 189, 248, 0.95)) scale(1.04);
+    }
+}
+
+/* Status Saat Di-Drag (Selalu Paling Atas di Panggung) */
+.lab-entity.is-dragging {
+    cursor: grabbing !important;
+    z-index: var(--z-dragging) !important;
+    transition: none !important;
+}
+
+.lab-entity.is-dragging .lab-entity-visual {
+    transform: translateY(-24px) scale(1.08);
+    filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.5));
+}
+
+.lab-entity.is-dragging .lab-entity-shadow {
+    transform: scale(1.4);
+    opacity: 0.2;
+}
+
+/* Status Terpilih (Tap-Tap di HP) */
+.lab-entity.is-selected {
+    outline: 3px dashed #38bdf8;
+    outline-offset: 5px;
+    border-radius: 12px;
+    animation: pulse-selected 1.2s infinite alternate;
+}
+
+@keyframes pulse-selected {
+    from { outline-color: #38bdf8; }
+    to { outline-color: #facc15; }
+}
+
+/* Visual Container SVG */
+.lab-entity-visual {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    transition: transform 0.24s ease-out;
+}
+
+/* Bayangan Kontak Realistis di Bawah Alas Objek */
+.lab-entity-shadow {
+    position: absolute;
+    bottom: -5px;
+    left: 5%;
+    width: 90%;
+    height: 14px;
+    background: radial-gradient(ellipse at center, rgba(5, 10, 20, 0.6) 0%, rgba(5, 10, 20, 0) 68%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+    transition: transform 0.24s ease-out, opacity 0.24s ease-out;
+}
+
+/* LABEL TEKS OBJEK BERUKURAN JELAS (>= 14px Desktop, >= 12px HP) */
+.lab-entity-label {
+    position: absolute;
+    bottom: -28px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #f8fafc;
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(6px);
+    padding: 3px 10px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    letter-spacing: 0.02em;
+}
+
+.lab-entity:hover .lab-entity-label,
+.lab-entity.can-interact .lab-entity-label,
+.lab-entity.is-selected .lab-entity-label {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ZONA TARGET (DROP ZONE) DI MEJA */
+.lab-target-highlight {
+    outline: 3px dashed #38bdf8 !important;
+    outline-offset: 8px;
+    border-radius: 16px;
+    animation: target-glow 1s infinite alternate ease-in-out;
+}
+
+@keyframes target-glow {
+    from {
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+    to {
+        box-shadow: 0 0 28px rgba(56, 189, 248, 0.9);
+    }
+}
+
+/* ANIMASI SHAKE SAAT SALAH DROP */
+.animate-shake {
+    animation: shake-error 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake-error {
+    10%, 90% { transform: translate3d(-4px, 0, 0); }
+    20%, 80% { transform: translate3d(6px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+    40%, 60% { transform: translate3d(8px, 0, 0); }
+}
+
+/* BANNER INDIKATOR SWIPE HORIZONTAL DI HP */
+.mobile-swipe-hint {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.85);
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: none;
+    pointer-events: none;
+    z-index: 40;
+    letter-spacing: 0.03em;
+}
+
+/* BANNER REKOMENDASI LANDSCAPE DI HP */
+.landscape-notice-banner {
+    background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid #334155;
+    color: #cbd5e1;
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+}
+
+/* --- TOAST KETERANGAN ILMIAH & JEBAKAN --- */
+.lab-toast-message {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 90%;
+    width: auto;
+    padding: 12px 22px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.45;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.4);
+    z-index: var(--z-toast-feedback);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lab-toast-message.success {
+    background: rgba(6, 78, 59, 0.95);
+    border: 1.5px solid #10b981;
+    color: #ecfdf5;
+}
+
+.lab-toast-message.error {
+    background: rgba(127, 29, 29, 0.95);
+    border: 1.5px solid #ef4444;
+    color: #fef2f2;
+}
+
+/* --- OVERLAY ANIMASI REAKSI / TIMER PROSES --- */
+.lab-process-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.72);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 80;
+    color: white;
+}
+
+.lab-clock-spin {
+    animation: clock-turn 2s linear infinite;
+}
+
+@keyframes clock-turn {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* --- TABEL PENGAMATAN OTOMATIS --- */
+.obs-table-wrapper {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.obs-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 12px 18px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.obs-table td {
+    padding: 14px 18px;
+    font-size: 14px;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.obs-table tr:last-child td {
+    border-bottom: none;
+}
+
+.obs-table tr.new-row {
+    animation: row-highlight 1.6s ease-out;
+}
+
+@keyframes row-highlight {
+    0% { background-color: #ecfdf5; }
+    100% { background-color: transparent; }
+}
+
+/* --- FINISH MODAL DIALOG (RINGKASAN & TOMBOL ULANGI) --- */
+.finish-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal);
+    padding: 16px;
+}
+
+.finish-modal-box {
+    background: #ffffff;
+    border-radius: 1.75rem;
+    max-width: 540px;
+    width: 100%;
+    padding: 32px;
+    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.3);
+    border: 1px solid #e2e8f0;
+    text-align: center;
+    animation: modal-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modal-pop {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* RESPONSIVE BREAKPOINT UNTUK MOBILE (< 768px) */
+@media (max-width: 768px) {
+    .lab-scene-wrapper {
+        min-height: 440px;
+        height: 52vh;
+    }
+
+    .lab-table-plane {
+        min-width: 760px; /* Memastikan ruang cukup untuk slot objek tanpa saling menumpuk */
+    }
+
+    .mobile-swipe-hint {
+        display: block;
+    }
+
+    @media (orientation: portrait) {
+        .landscape-notice-banner {
+            display: flex;
+        }
+    }
+
+    .lab-entity-label {
+        font-size: 12px;
+        padding: 2px 8px;
+        bottom: -24px;
+    }
+
+    .lab-table-strip {
+        height: 32%;
+    }
+
+    .lab-table-strip::before {
+        top: 19%;
+    }
+
+    .lab-wall-shadow {
+        bottom: 32%;
+    }
+}
