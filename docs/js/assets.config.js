@@ -9,8 +9,8 @@
 
     const LabAssetsConfig = {
         defaultType: 'svg',
-        svgBaseUrl: '/static/assets/svg',
-        imageBaseUrl: '/static/assets/images',
+        svgBaseUrl: 'assets/svg',
+        imageBaseUrl: 'assets/images',
 
         // Skala proporsional realistis (1.35x - 1.5x)
         objects: {

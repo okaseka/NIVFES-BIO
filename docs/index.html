@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk - NIVFES BIO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #F8FAFC; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-xl shadow-md border border-slate-200 w-full max-w-md">
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-teal-600 mb-2">NIVFES BIO</h1>
+            <p class="text-slate-500 text-sm">Masukkan identitas.</p>
+        </div>
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+                <input type="text" id="login-nama" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-teal-500" placeholder="Nama">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">NPM / NIS</label>
+                <input type="text" id="login-npm" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-teal-500" placeholder="12345678">
+            </div>
+            <button type="submit" class="w-full bg-teal-600 text-white font-bold py-2 rounded-lg hover:bg-teal-700 transition">Masuk</button>
+        </form>
+    </div>
+    <script>
+        // Cek jika sudah login, langsung redirect ke home
+        (function() {
+            const nama = localStorage.getItem('nivfes_nama');
+            const npm = localStorage.getItem('nivfes_npm');
+            if (nama && npm) {
+                window.location.href = 'home.html';
+            }
+        })();
+
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nama = document.getElementById('login-nama').value.trim();
+            const npm = document.getElementById('login-npm').value.trim();
+            if (nama && npm) {
+                localStorage.setItem('nivfes_nama', nama);
+                localStorage.setItem('nivfes_npm', npm);
+                window.location.href = 'home.html';
+            }
+        });
+    </script>
+</body>
+</html>
+

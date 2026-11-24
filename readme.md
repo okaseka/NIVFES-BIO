@@ -1,9 +1,25 @@
-1. Download Golang di (https://go.dev/dl/)
+# NIVFES BIO
 
-2. Cek apakah golang sudah terinstal di terminal: go version
+Platform praktikum virtual Bioteknologi Modern — simulasi laboratorium interaktif berbasis web.
 
-3. Instal auto semua package golang yang di butuh kan: go mod tidy
+## Fitur
+- 🔬 5 modul bioteknologi (Kultur Jaringan, Bayi Tabung, Kloning, Hibridoma, DNA Rekombinan)
+- 🧪 Simulator lab virtual interaktif (drag & drop SVG)
+- 📝 Evaluasi/kuis dengan papan peringkat
+- 🎨 Katalog objek SVG laboratorium
+- 📱 Responsive (mobile & desktop)
 
-4. Cara run projek: go run main.go (Diterminal)
+## Cara Menjalankan Lokal
 
-5. Cara close projek: ctrl+c (Diterminal)
+```bash
+cd docs
+python -m http.server 8080
+```
+
+Buka browser → `http://localhost:8080`
+
+## Deploy
+
+Site statis di folder `docs/`. Deploy ke GitHub Pages:
+1. Push ke GitHub
+2. Settings → Pages → Source: `main` branch, folder `/docs`

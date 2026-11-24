@@ -1,6 +1,6 @@
 // =========================================================================
-// MOTION & NAVIGATION UTILITIES (NIVFES BIO)
-// Mengelola Navigasi Tab, Kuis Evaluasi, Leaderboard, dan Feedback
+// MOTION & NAVIGATION UTILITIES (NIVFES BIO - STATIC VERSION)
+// Mengelola Navigasi Tab, Kuis Evaluasi, Leaderboard (localStorage), dan Feedback
 // =========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -55,7 +55,7 @@ window.switchTab = function(tabId, btnElement) {
             activeContent.classList.remove('opacity-0', 'translate-y-4');
             activeContent.classList.add('opacity-100', 'translate-y-0', 'visible', 'pointer-events-auto', 'block');
             
-            // Trigger inisialisasi/resume simulator jika tab simulator dibuka (tanpa mereset progres)
+            // Trigger inisialisasi/resume simulator jika tab simulator dibuka
             if (tabId === 'simulator' && window.VLabManager) {
                 if (window.VLabManager.onTabActivated) {
                     window.VLabManager.onTabActivated();
@@ -67,7 +67,7 @@ window.switchTab = function(tabId, btnElement) {
     }
 };
 
-// --- FUNGSI KUIS DAN LEADERBOARD ---
+// --- FUNGSI KUIS DAN LEADERBOARD (LOCALSTORAGE) ---
 window.currentQuizScore = 0;
 
 window.checkAnswer = function(btn) {
@@ -118,8 +118,8 @@ window.checkAnswer = function(btn) {
     }, delayTimer);
 };
 
-// Kirim Skor ke Server Golang
-window.submitScore = async function() {
+// Simpan Skor ke localStorage
+window.submitScore = function() {
     const nameInput = document.getElementById('player-name').value.trim();
     if (!nameInput) { 
         alert("Nama tidak boleh kosong!"); 
@@ -129,60 +129,64 @@ window.submitScore = async function() {
     const moduleId = document.getElementById('quiz-container').getAttribute('data-module');
     const finalScore = Math.round(window.currentQuizScore);
 
-    try {
-        await fetch('/api/score', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ module_id: moduleId, name: nameInput, score: finalScore })
-        });
-        
-        document.getElementById('submit-score-section').classList.add('hidden');
-        loadLeaderboard();
-    } catch (e) {
-        console.error("Gagal mengirim skor:", e);
-    }
+    const scores = JSON.parse(localStorage.getItem('nivfes_scores') || '[]');
+    scores.push({
+        npm: localStorage.getItem('nivfes_npm') || '',
+        nama: nameInput,
+        module_id: moduleId,
+        score: finalScore,
+        waktu: new Date().toLocaleString('id-ID')
+    });
+    localStorage.setItem('nivfes_scores', JSON.stringify(scores));
+    
+    document.getElementById('submit-score-section').classList.add('hidden');
+    loadLeaderboard();
 };
 
-// Ambil Leaderboard dari Server Golang
-window.loadLeaderboard = async function() {
+// Ambil Leaderboard dari localStorage
+window.loadLeaderboard = function() {
     const container = document.getElementById('quiz-container');
     if (!container) return;
     const moduleId = container.getAttribute('data-module');
     const section = document.getElementById('leaderboard-section');
     if (section) section.classList.remove('hidden');
     
-    try {
-        const response = await fetch(`/api/score?module=${moduleId}`);
-        const data = await response.json();
-        
-        const list = document.getElementById('leaderboard-list');
-        if (!list) return;
-        list.innerHTML = '';
-        
-        if (!data || data.length === 0) {
-            list.innerHTML = '<li class="p-4 text-center text-slate-500">Belum ada skor. Jadilah yang pertama!</li>';
-            return;
-        }
-
-        data.forEach((entry, index) => {
-            const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '👤';
-            list.innerHTML += `
-                <li class="flex justify-between items-center p-4 hover:bg-slate-50">
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl">${medal}</span>
-                        <span class="font-bold text-slate-700">${entry.name}</span>
-                    </div>
-                    <span class="bg-teal-100 text-teal-800 font-extrabold px-3 py-1 rounded-full text-sm">${entry.score} Pts</span>
-                </li>
-            `;
-        });
-    } catch (e) {
-        console.error("Gagal mengambil leaderboard:", e);
+    const allScores = JSON.parse(localStorage.getItem('nivfes_scores') || '[]');
+    
+    // Filter skor untuk modul ini
+    const filteredScores = allScores.filter(s => s.module_id === moduleId);
+    
+    // Urutkan dari tertinggi
+    filteredScores.sort((a, b) => b.score - a.score);
+    
+    // Ambil top 5
+    const topScores = filteredScores.slice(0, 5);
+    
+    const list = document.getElementById('leaderboard-list');
+    if (!list) return;
+    list.innerHTML = '';
+    
+    if (topScores.length === 0) {
+        list.innerHTML = '<li class="p-4 text-center text-slate-500">Belum ada skor. Jadilah yang pertama!</li>';
+        return;
     }
+
+    topScores.forEach((entry, index) => {
+        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '👤';
+        list.innerHTML += `
+            <li class="flex justify-between items-center p-4 hover:bg-slate-50">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">${medal}</span>
+                    <span class="font-bold text-slate-700">${entry.nama}</span>
+                </div>
+                <span class="bg-teal-100 text-teal-800 font-extrabold px-3 py-1 rounded-full text-sm">${entry.score} Pts</span>
+            </li>
+        `;
+    });
 };
 
-// --- FUNGSI MENGIRIM FEEDBACK (FOOTER) ---
-window.sendFeedback = async function() {
+// --- FUNGSI MENGIRIM FEEDBACK (FOOTER) - LOCALSTORAGE ---
+window.sendFeedback = function() {
     const inputField = document.getElementById('feedback-input');
     const successMsg = document.getElementById('feedback-msg');
     
@@ -191,24 +195,19 @@ window.sendFeedback = async function() {
         return;
     }
 
-    try {
-        const response = await fetch('/api/feedback', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: inputField.value.trim() })
-        });
+    const feedbacks = JSON.parse(localStorage.getItem('nivfes_feedbacks') || '[]');
+    feedbacks.push({
+        npm: localStorage.getItem('nivfes_npm') || '',
+        nama: localStorage.getItem('nivfes_nama') || '',
+        message: inputField.value.trim(),
+        waktu: new Date().toLocaleString('id-ID')
+    });
+    localStorage.setItem('nivfes_feedbacks', JSON.stringify(feedbacks));
 
-        if (response.ok) {
-            successMsg.classList.remove('hidden');
-            inputField.value = ''; 
-            setTimeout(() => {
-                successMsg.classList.add('hidden');
-            }, 3000);
-        } else {
-            alert("Terjadi kesalahan saat mengirim feedback.");
-        }
-    } catch (e) {
-        console.error("Gagal mengirim feedback:", e);
-        alert("Gagal terhubung ke server.");
-    }
+    successMsg.classList.remove('hidden');
+    inputField.value = ''; 
+    setTimeout(() => {
+        successMsg.classList.add('hidden');
+    }, 3000);
 };
+

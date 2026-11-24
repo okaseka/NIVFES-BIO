@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIVFES BIO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
+        h1, h2, h3, .nav-brand { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="glass-nav fixed w-full top-0 z-50 border-b border-slate-200 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="home.html" class="nav-brand text-2xl font-bold text-teal-600">NIVFES BIO</a>
+            <div class="flex items-center gap-4">
+                <a href="katalog.html" target="_blank" class="text-xs bg-teal-50 text-teal-700 hover:bg-teal-100 font-semibold px-3 py-1.5 rounded-lg border border-teal-200 transition flex items-center gap-1.5">
+                    <span>🎨</span> Katalog Objek SVG
+                </a>
+                <div class="text-right text-sm">
+                    <p class="font-bold text-slate-800" id="nav-nama"></p>
+                    <p class="text-slate-500" id="nav-npm"></p>
+                </div>
+                <a href="#" onclick="doLogout()" class="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-semibold hover:bg-red-100 text-sm">Keluar</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto pt-24 px-4 sm:px-6 pb-12 flex-grow w-full">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-slate-800 mb-4">Bioteknologi Modern</h1>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">Platform praktikum virtual. Silakan pilih modul eksperimen di bawah ini untuk mempelajari teori dan melakukan simulasi laboratorium.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="modules-grid">
+            <!-- Di-generate oleh JavaScript -->
+        </div>
+    </main>
+    
+    <!-- Footer & Feedback -->
+    <footer class="border-t border-slate-200 bg-white py-6 mt-auto">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col items-center">
+            <div class="w-full max-w-md mb-6">
+                <h4 class="text-center font-bold text-slate-700 mb-2">Beri Masukan (Feedback)</h4>
+                <div class="flex gap-2">
+                    <input type="text" id="feedback-input" class="flex-grow border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-teal-500" placeholder="Ketik masukan Anda di sini...">
+                    <button onclick="sendFeedback()" class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-teal-700">Kirim</button>
+                </div>
+                <p id="feedback-msg" class="text-emerald-600 text-xs text-center mt-2 hidden">Terima kasih atas masukannya!</p>
+            </div>
+            <div class="text-center text-slate-500 text-sm">
+                &copy; NIVFES BIO.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Auth check
+        (function() {
+            const nama = localStorage.getItem('nivfes_nama');
+            const npm = localStorage.getItem('nivfes_npm');
+            if (!nama || !npm) {
+                window.location.href = 'index.html';
+                return;
+            }
+            document.getElementById('nav-nama').textContent = nama;
+            document.getElementById('nav-npm').textContent = npm;
+        })();
+
+        function doLogout() {
+            localStorage.removeItem('nivfes_nama');
+            localStorage.removeItem('nivfes_npm');
+            window.location.href = 'index.html';
+        }
+
+        // Load modules from JSON
+        fetch('data/modules.json')
+            .then(r => r.json())
+            .then(modules => {
+                const grid = document.getElementById('modules-grid');
+                modules.forEach(m => {
+                    const card = document.createElement('a');
+                    card.href = `module.html?id=${m.id}`;
+                    card.className = 'card-hover bg-white rounded-xl p-6 border border-slate-200 block group relative overflow-hidden';
+                    card.innerHTML = `
+                        <div class="text-4xl mb-4 bg-teal-50 w-16 h-16 flex items-center justify-center rounded-lg">${m.icon}</div>
+                        <h2 class="text-xl font-bold text-slate-800 mb-2">${m.title}</h2>
+                        <p class="text-sm text-slate-600 leading-relaxed">${m.summary}</p>
+                        <div class="absolute bottom-0 left-0 h-1 bg-teal-600 w-0 group-hover:w-full transition-all duration-300"></div>
+                    `;
+                    grid.appendChild(card);
+                });
+            });
+
+        // Feedback - simpan ke localStorage
+        function sendFeedback() {
+            const inputField = document.getElementById('feedback-input');
+            const successMsg = document.getElementById('feedback-msg');
+            if (!inputField || !inputField.value.trim()) {
+                alert("Masukan tidak boleh kosong!");
+                return;
+            }
+            const feedbacks = JSON.parse(localStorage.getItem('nivfes_feedbacks') || '[]');
+            feedbacks.push({
+                npm: localStorage.getItem('nivfes_npm'),
+                nama: localStorage.getItem('nivfes_nama'),
+                message: inputField.value.trim(),
+                waktu: new Date().toLocaleString('id-ID')
+            });
+            localStorage.setItem('nivfes_feedbacks', JSON.stringify(feedbacks));
+            successMsg.classList.remove('hidden');
+            inputField.value = '';
+            setTimeout(() => { successMsg.classList.add('hidden'); }, 3000);
+        }
+    </script>
+</body>
+</html>
+
